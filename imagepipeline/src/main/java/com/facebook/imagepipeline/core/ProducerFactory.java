@@ -39,6 +39,7 @@ import com.facebook.imagepipeline.producers.DiskCacheWriteProducer;
 import com.facebook.imagepipeline.producers.EncodedCacheKeyMultiplexProducer;
 import com.facebook.imagepipeline.producers.EncodedMemoryCacheProducer;
 import com.facebook.imagepipeline.producers.LocalAssetFetchProducer;
+import com.facebook.imagepipeline.producers.LocalAudioThumbnailProducer;
 import com.facebook.imagepipeline.producers.LocalContentUriFetchProducer;
 import com.facebook.imagepipeline.producers.LocalContentUriThumbnailFetchProducer;
 import com.facebook.imagepipeline.producers.LocalExifThumbnailProducer;
@@ -303,6 +304,12 @@ public class ProducerFactory {
 
   public LocalVideoThumbnailProducer newLocalVideoThumbnailProducer() {
     return new LocalVideoThumbnailProducer(
+        mExecutorSupplier.forLocalStorageRead(),
+        mContentResolver);
+  }
+
+  public LocalAudioThumbnailProducer newLocalAudioThumbnailProducer() {
+    return new LocalAudioThumbnailProducer(
         mExecutorSupplier.forLocalStorageRead(),
         mContentResolver);
   }

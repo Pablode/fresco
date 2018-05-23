@@ -13,6 +13,7 @@ import static com.facebook.imagepipeline.common.SourceUriType.SOURCE_TYPE_LOCAL_
 import static com.facebook.imagepipeline.common.SourceUriType.SOURCE_TYPE_LOCAL_IMAGE_FILE;
 import static com.facebook.imagepipeline.common.SourceUriType.SOURCE_TYPE_LOCAL_RESOURCE;
 import static com.facebook.imagepipeline.common.SourceUriType.SOURCE_TYPE_LOCAL_VIDEO_FILE;
+import static com.facebook.imagepipeline.common.SourceUriType.SOURCE_TYPE_LOCAL_AUDIO_FILE;
 import static com.facebook.imagepipeline.common.SourceUriType.SOURCE_TYPE_NETWORK;
 import static com.facebook.imagepipeline.common.SourceUriType.SOURCE_TYPE_QUALIFIED_RESOURCE;
 import static com.facebook.imagepipeline.common.SourceUriType.SOURCE_TYPE_UNKNOWN;
@@ -31,6 +32,7 @@ import java.lang.annotation.Retention;
     SOURCE_TYPE_NETWORK,
     SOURCE_TYPE_LOCAL_FILE,
     SOURCE_TYPE_LOCAL_VIDEO_FILE,
+    SOURCE_TYPE_LOCAL_AUDIO_FILE,
     SOURCE_TYPE_LOCAL_IMAGE_FILE,
     SOURCE_TYPE_LOCAL_CONTENT,
     SOURCE_TYPE_LOCAL_ASSET,
@@ -44,10 +46,11 @@ public @interface SourceUriType {
   int SOURCE_TYPE_NETWORK = 0;
   int SOURCE_TYPE_LOCAL_FILE = 1;
   int SOURCE_TYPE_LOCAL_VIDEO_FILE = 2;
-  int SOURCE_TYPE_LOCAL_IMAGE_FILE = 3;
-  int SOURCE_TYPE_LOCAL_CONTENT = 4;
-  int SOURCE_TYPE_LOCAL_ASSET = 5;
-  int SOURCE_TYPE_LOCAL_RESOURCE = 6;
-  int SOURCE_TYPE_DATA = 7;
-  int SOURCE_TYPE_QUALIFIED_RESOURCE = 8;
+  int SOURCE_TYPE_LOCAL_AUDIO_FILE = 3;
+  int SOURCE_TYPE_LOCAL_IMAGE_FILE = 4;
+  int SOURCE_TYPE_LOCAL_CONTENT = 5;
+  int SOURCE_TYPE_LOCAL_ASSET = 6;
+  int SOURCE_TYPE_LOCAL_RESOURCE = 7;
+  int SOURCE_TYPE_DATA = 8;
+  int SOURCE_TYPE_QUALIFIED_RESOURCE = 9;
 }

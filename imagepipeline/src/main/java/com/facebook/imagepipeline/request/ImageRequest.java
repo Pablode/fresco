@@ -13,6 +13,7 @@ import static com.facebook.imagepipeline.common.SourceUriType.SOURCE_TYPE_LOCAL_
 import static com.facebook.imagepipeline.common.SourceUriType.SOURCE_TYPE_LOCAL_IMAGE_FILE;
 import static com.facebook.imagepipeline.common.SourceUriType.SOURCE_TYPE_LOCAL_RESOURCE;
 import static com.facebook.imagepipeline.common.SourceUriType.SOURCE_TYPE_LOCAL_VIDEO_FILE;
+import static com.facebook.imagepipeline.common.SourceUriType.SOURCE_TYPE_LOCAL_AUDIO_FILE;
 import static com.facebook.imagepipeline.common.SourceUriType.SOURCE_TYPE_NETWORK;
 import static com.facebook.imagepipeline.common.SourceUriType.SOURCE_TYPE_QUALIFIED_RESOURCE;
 import static com.facebook.imagepipeline.common.SourceUriType.SOURCE_TYPE_UNKNOWN;
@@ -317,8 +318,11 @@ public class ImageRequest {
     if (UriUtil.isNetworkUri(uri)) {
       return SOURCE_TYPE_NETWORK;
     } else if (UriUtil.isLocalFileUri(uri)) {
-      if (MediaUtils.isVideo(MediaUtils.extractMime(uri.getPath()))) {
+      String mimeType = MediaUtils.extractMime(uri.getPath());
+      if (MediaUtils.isVideo(mimeType)) {
         return SOURCE_TYPE_LOCAL_VIDEO_FILE;
+      } else if (MediaUtils.isAudio(mimeType)) {
+        return SOURCE_TYPE_LOCAL_AUDIO_FILE;
       } else {
         return SOURCE_TYPE_LOCAL_IMAGE_FILE;
       }

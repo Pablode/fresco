@@ -13,6 +13,7 @@ import static com.facebook.imagepipeline.common.SourceUriType.SOURCE_TYPE_LOCAL_
 import static com.facebook.imagepipeline.common.SourceUriType.SOURCE_TYPE_LOCAL_IMAGE_FILE;
 import static com.facebook.imagepipeline.common.SourceUriType.SOURCE_TYPE_LOCAL_RESOURCE;
 import static com.facebook.imagepipeline.common.SourceUriType.SOURCE_TYPE_LOCAL_VIDEO_FILE;
+import static com.facebook.imagepipeline.common.SourceUriType.SOURCE_TYPE_LOCAL_AUDIO_FILE;
 import static com.facebook.imagepipeline.common.SourceUriType.SOURCE_TYPE_NETWORK;
 import static com.facebook.imagepipeline.common.SourceUriType.SOURCE_TYPE_QUALIFIED_RESOURCE;
 
@@ -31,6 +32,7 @@ import com.facebook.imagepipeline.producers.BitmapMemoryCacheProducer;
 import com.facebook.imagepipeline.producers.DecodeProducer;
 import com.facebook.imagepipeline.producers.EncodedMemoryCacheProducer;
 import com.facebook.imagepipeline.producers.LocalAssetFetchProducer;
+import com.facebook.imagepipeline.producers.LocalAudioThumbnailProducer;
 import com.facebook.imagepipeline.producers.LocalContentUriFetchProducer;
 import com.facebook.imagepipeline.producers.LocalFileFetchProducer;
 import com.facebook.imagepipeline.producers.LocalResourceFetchProducer;
@@ -76,6 +78,7 @@ public class ProducerSequenceFactory {
   private Producer<EncodedImage> mCommonNetworkFetchToEncodedMemorySequence;
   @VisibleForTesting Producer<CloseableReference<CloseableImage>> mLocalImageFileFetchSequence;
   @VisibleForTesting Producer<CloseableReference<CloseableImage>> mLocalVideoFileFetchSequence;
+  @VisibleForTesting Producer<CloseableReference<CloseableImage>> mLocalAudioFileFetchSequence;
   @VisibleForTesting Producer<CloseableReference<CloseableImage>> mLocalContentUriFetchSequence;
   @VisibleForTesting Producer<CloseableReference<CloseableImage>> mLocalResourceFetchSequence;
   @VisibleForTesting Producer<CloseableReference<CloseableImage>> mLocalAssetFetchSequence;
@@ -132,6 +135,7 @@ public class ProducerSequenceFactory {
       case SOURCE_TYPE_NETWORK:
         return getNetworkFetchEncodedImageProducerSequence();
       case SOURCE_TYPE_LOCAL_VIDEO_FILE:
+      case SOURCE_TYPE_LOCAL_AUDIO_FILE:
       case SOURCE_TYPE_LOCAL_IMAGE_FILE:
         return getLocalFileFetchEncodedImageProducerSequence();
       default:
@@ -185,6 +189,7 @@ public class ProducerSequenceFactory {
       case SOURCE_TYPE_NETWORK:
         return getNetworkFetchToEncodedMemoryPrefetchSequence();
       case SOURCE_TYPE_LOCAL_VIDEO_FILE:
+      case SOURCE_TYPE_LOCAL_AUDIO_FILE:
       case SOURCE_TYPE_LOCAL_IMAGE_FILE:
         return getLocalFileFetchToEncodedMemoryPrefetchSequence();
       default:
@@ -254,11 +259,16 @@ public class ProducerSequenceFactory {
         return getNetworkFetchSequence();
       case SOURCE_TYPE_LOCAL_VIDEO_FILE:
         return getLocalVideoFileFetchSequence();
+      case SOURCE_TYPE_LOCAL_AUDIO_FILE:
+        return getLocalAudioFileFetchSequence();
       case SOURCE_TYPE_LOCAL_IMAGE_FILE:
         return getLocalImageFileFetchSequence();
       case SOURCE_TYPE_LOCAL_CONTENT:
         if (MediaUtils.isVideo(mContentResolver.getType(uri))) {
           return getLocalVideoFileFetchSequence();
+        }
+        if (MediaUtils.isAudio(mContentResolver.getType(uri))) {
+          return getLocalAudioFileFetchSequence();
         }
         return getLocalContentUriFetchSequence();
       case SOURCE_TYPE_LOCAL_ASSET:
@@ -401,6 +411,21 @@ public class ProducerSequenceFactory {
           newBitmapCacheGetToBitmapCacheSequence(localVideoThumbnailProducer);
     }
     return mLocalVideoFileFetchSequence;
+  }
+
+  /**
+   * Bitmap cache get -> thread hand off -> multiplex -> bitmap cache ->
+   * local audio thumbnail
+   */
+  private synchronized Producer<CloseableReference<CloseableImage>>
+  getLocalAudioFileFetchSequence() {
+    if (mLocalAudioFileFetchSequence == null) {
+      LocalAudioThumbnailProducer localAudioThumbnailProducer =
+          mProducerFactory.newLocalAudioThumbnailProducer();
+      mLocalAudioFileFetchSequence =
+          newBitmapCacheGetToBitmapCacheSequence(localAudioThumbnailProducer);
+    }
+    return mLocalAudioFileFetchSequence;
   }
 
   /**

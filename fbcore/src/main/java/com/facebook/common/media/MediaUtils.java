@@ -30,6 +30,10 @@ public class MediaUtils {
     return mimeType != null && mimeType.startsWith("video/");
   }
 
+  public static boolean isAudio(@Nullable String mimeType) {
+    return mimeType != null && mimeType.startsWith("audio/");
+  }
+
   public static boolean isThreeD(@Nullable String mimeType) {
     return mimeType != null && mimeType.equals("model/gltf-binary");
   }
